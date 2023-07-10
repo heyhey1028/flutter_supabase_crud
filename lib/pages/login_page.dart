@@ -59,7 +59,6 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 12.0),
               ElevatedButton(
-                child: isLoading ? const CircularProgressIndicator() : const Text('Login'),
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     final response = await _loginWithPassword(
@@ -72,6 +71,7 @@ class _LoginPageState extends State<LoginPage> {
                     Navigator.of(context).pop();
                   }
                 },
+                child: isLoading ? const CircularProgressIndicator() : const Text('Login'),
               ),
               TextButton(
                 child: const Text('Go to Signup'),
