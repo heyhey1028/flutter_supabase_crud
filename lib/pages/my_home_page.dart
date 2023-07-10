@@ -1,8 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_supabase_crud/widgets/create_todo_modal.dart';
+import 'package:flutter_supabase_crud/widgets/todo_list.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../models/todo.dart';
 import '../utils/utils.dart';
 import 'login_page.dart';
 
@@ -21,6 +24,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool isLoggedIn = false;
   bool isLoading = false;
   late StreamSubscription<AuthState> _authStateChangesSubscription;
+  late Stream<List<Todo>> todoStream;
 
   // Create a function that returns a StreamSubscription of AuthState
   StreamSubscription<AuthState> getAuthStateSubscription() {
@@ -33,6 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
           isLoggedIn = true;
           userID = userData.id;
           userName = userData.userMetadata!['username'];
+          todoStream = getTodoStream(userID);
         });
         // If the user is signed out, reset the state
       } else if (state.event == AuthChangeEvent.signedOut) {
@@ -43,6 +48,26 @@ class _MyHomePageState extends State<MyHomePage> {
         });
       }
     });
+  }
+
+  Stream<List<Todo>> getTodoStream(String userID) {
+    return Supabase.instance.client
+        .from('todos')
+        .stream(primaryKey: ['id'])
+        .eq('user_id', userID)
+        .order(
+          'updated_at',
+        )
+        .map(
+          (events) {
+            try {
+              return events.map(Todo.fromJson).where((todo) => todo.isCompleted != true).toList();
+            } catch (e) {
+              print('something went wrong:$e');
+            }
+            return [];
+          },
+        );
   }
 
   @override
@@ -62,40 +87,42 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: isLoggedIn ? Text('Hi, $userName') : Text(widget.title),
+        actions: [
+          if (isLoggedIn)
+            IconButton(
+              onPressed: () => _logout(),
+              icon: const Icon(Icons.logout),
+            ),
+        ],
       ),
       body: Center(
         child: isLoading
             ? const CircularProgressIndicator()
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'userID:$userID',
+            : isLoggedIn
+                ? TodoList(todoStream: todoStream)
+                :
+                // login button with ElevatedButton
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoginPage(),
+                        ),
+                      );
+                    },
+                    child: const Text('To Login'),
                   ),
-                  Text(
-                    'user name:$userName',
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                ],
-              ),
       ),
+      // floatingactionbutton with plus mark
       floatingActionButton: isLoggedIn
-          ? FloatingActionButton.extended(
-              onPressed: () => _logout(),
-              label: const Text('Logout'),
+          ? FloatingActionButton(
+              onPressed: () => showCreateTodoModal(context),
+              tooltip: 'Add',
+              child: const Icon(Icons.add),
             )
-          : FloatingActionButton.extended(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const LoginPage(),
-                  ),
-                );
-              },
-              label: const Text('Login'),
-            ),
+          : null,
     );
   }
 
