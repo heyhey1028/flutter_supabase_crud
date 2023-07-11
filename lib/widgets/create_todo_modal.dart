@@ -86,6 +86,7 @@ class _CreateTodoModalState extends State<CreateTodoModal> {
                 });
                 if (context.mounted) Navigator.of(context).pop();
               } catch (e) {
+                Navigator.of(context).pop();
                 if (context.mounted) showErrorSnackBar(context, message: e.toString());
               }
               setState(() {

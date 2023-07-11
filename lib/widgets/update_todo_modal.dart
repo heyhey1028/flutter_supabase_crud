@@ -96,6 +96,7 @@ class _UpdateTodoModalState extends State<UpdateTodoModal> {
                 }).match({'id': widget.todo.id});
                 if (context.mounted) Navigator.of(context).pop();
               } catch (e) {
+                Navigator.of(context).pop();
                 if (context.mounted) showErrorSnackBar(context, message: e.toString());
               }
 
