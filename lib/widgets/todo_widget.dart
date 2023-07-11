@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_supabase_crud/models/todo.dart';
-import 'package:flutter_supabase_crud/widgets/update_todo_modal.dart';
+import 'package:flutter_supabase_crud/widgets/upsert_todo_modal.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../utils/utils.dart';
@@ -60,8 +60,13 @@ class _TodoWidgetState extends State<TodoWidget> {
                       children: [
                         const Spacer(),
                         TextButton(
-                          onPressed: () => showUpdateTodoModal(context, widget.todo),
-                          // onPressed: () => showUpsertTodoModal(context, widget.todo),
+                          // onPressed: () => showUpdateTodoModal(context, widget.todo),
+                          onPressed: () => delete(context, widget.todo),
+                          child: const Text('DELETE'),
+                        ),
+                        TextButton(
+                          // onPressed: () => showUpdateTodoModal(context, widget.todo),
+                          onPressed: () => showUpsertTodoModal(context, widget.todo),
                           child: const Text('EDIT'),
                         )
                       ],
@@ -83,6 +88,14 @@ class _TodoWidgetState extends State<TodoWidget> {
       await Supabase.instance.client.from('todos').update({
         'is_completed': true,
       }).match({'id': todo.id});
+    } catch (e) {
+      if (context.mounted) showErrorSnackBar(context, message: e.toString());
+    }
+  }
+
+  Future<void> delete(BuildContext context, Todo todo) async {
+    try {
+      await Supabase.instance.client.from('todos').delete().match({'id': todo.id});
     } catch (e) {
       if (context.mounted) showErrorSnackBar(context, message: e.toString());
     }
