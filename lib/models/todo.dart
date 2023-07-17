@@ -20,15 +20,15 @@ class Todo {
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  factory Todo.fromJson(Map<String, dynamic> json) {
+  factory Todo.fromJson(dynamic json) {
     return Todo(
       id: json['id'].toString(),
       title: json['title'] as String,
       description: json['description'] as String,
       isCompleted: json['is_completed'] as bool,
       userId: json['user_id'] as String,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
+      createdAt: DateTime.parse(json['created_at']),
+      updatedAt: DateTime.parse(json['updated_at']),
     );
   }
 }
