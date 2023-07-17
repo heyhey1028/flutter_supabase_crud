@@ -1,16 +1,18 @@
 # flutter_supabase_crud
 
-A new Flutter project.
+This is a Sample Flutter project for introducing CRUD operations and queries on Supabase database.
 
-## Getting Started
+https://supabase.com/docs/guides/database/overview
 
-This project is a starting point for a Flutter application.
+|Home Page|Create Todo|Search Page|
+|----|----|----|
+|<img src='https://github.com/heyhey1028/flutter_supabase_crud/assets/44666053/6ccbc7d4-ee29-4d0e-bb38-29f28dcf9346' width='350'>|<img src='https://github.com/heyhey1028/flutter_supabase_crud/assets/44666053/952dba12-2ffc-487b-8e2b-a3719c6d5b77' width='350'>|<img src='https://github.com/heyhey1028/flutter_supabase_crud/assets/44666053/0751642a-0092-4e1e-a085-3411c4e440e4' width='350'>|
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+
+
+
+
+
