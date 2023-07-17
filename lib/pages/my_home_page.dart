@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_supabase_crud/widgets/create_todo_modal.dart';
+import 'package:flutter_supabase_crud/widgets/search_bar_widget.dart';
 import 'package:flutter_supabase_crud/widgets/todo_list.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -50,6 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  // Get the todo stream for the current user
   Stream<List<Todo>> getTodoStream(String userID) {
     return Supabase.instance.client
         .from('todos')
@@ -96,24 +98,29 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
         ],
       ),
-      body: Center(
-        child: isLoading
-            ? const CircularProgressIndicator()
-            : isLoggedIn
-                ? TodoList(todoStream: todoStream)
-                :
-                // login button with ElevatedButton
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LoginPage(),
-                        ),
-                      );
-                    },
-                    child: const Text('To Login'),
-                  ),
+      body: Column(
+        children: [
+          const SearchBarWidget(),
+          Flexible(
+            child: isLoading
+                ? const CircularProgressIndicator()
+                : isLoggedIn
+                    ? TodoList(todoStream: todoStream)
+                    :
+                    // login button with ElevatedButton
+                    ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LoginPage(),
+                            ),
+                          );
+                        },
+                        child: const Text('To Login'),
+                      ),
+          ),
+        ],
       ),
       // floatingactionbutton with plus mark
       floatingActionButton: isLoggedIn
@@ -127,11 +134,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  /// Logs out the current user.
-  ///
-  /// If the logout process fails, the user is shown a snackbar with the error.
-  ///
-  /// If the logout process succeeds, the user is taken to the login screen.
   Future<void> _logout() async {
     setState(() {
       isLoading = true;
