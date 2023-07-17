@@ -19,6 +19,9 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Search Page'),
+      ),
       body: SafeArea(
         child: Column(
           children: [
@@ -53,6 +56,7 @@ class _SearchPageState extends State<SearchPage> {
 
   /// search todo by title
   Future<void> _onSubmitted(BuildContext context, String searchWord) async {
+    if (searchWord.isEmpty) return;
     try {
       final result = await Supabase.instance.client.from('todos').select().textSearch(
             'title',
