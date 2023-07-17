@@ -21,6 +21,12 @@ class _TodoWidgetState extends State<TodoWidget> {
   bool isCompleted = false;
 
   @override
+  void initState() {
+    isCompleted = widget.todo.isCompleted;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
